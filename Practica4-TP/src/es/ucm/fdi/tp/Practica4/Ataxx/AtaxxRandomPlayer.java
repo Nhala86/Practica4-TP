@@ -8,7 +8,7 @@ import es.ucm.fdi.tp.basecode.bgame.model.GameMove;
 import es.ucm.fdi.tp.basecode.bgame.model.GameRules;
 import es.ucm.fdi.tp.basecode.bgame.model.Piece;
 
-public class AtaxxPlayer extends Player {
+public class AtaxxRandomPlayer extends Player {
 
 	
 

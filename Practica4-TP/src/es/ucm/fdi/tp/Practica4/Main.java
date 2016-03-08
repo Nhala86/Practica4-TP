@@ -535,6 +535,7 @@ public class Main {
 			break;
 		case Ataxx:
 			gameFactory = new AtaxxFactory();
+			break;
 		default:
 			throw new UnsupportedOperationException("Something went wrong! This program point should be unreachable!");
 		}

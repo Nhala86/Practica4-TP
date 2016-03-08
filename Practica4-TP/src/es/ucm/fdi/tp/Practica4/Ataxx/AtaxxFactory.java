@@ -1,5 +1,6 @@
 package es.ucm.fdi.tp.Practica4.Ataxx;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import es.ucm.fdi.tp.basecode.bgame.control.Controller;
@@ -16,13 +17,14 @@ public class AtaxxFactory implements GameFactory {
 	private int obstaculo;
 	
 	public AtaxxFactory(){
+		this.dim = 5;
+		this.obstaculo = 0;
 		
 	}
 
 	@Override
 	public GameRules gameRules() {
-		// TODO Auto-generated method stub
-		return null;
+		return new AtaxxRules(this.dim);
 	}
 
 	@Override
@@ -45,8 +47,10 @@ public class AtaxxFactory implements GameFactory {
 
 	@Override
 	public List<Piece> createDefaultPieces() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Piece> pieces = new ArrayList<Piece>();
+		pieces.add(new Piece("X"));
+		pieces.add(new Piece("O"));
+		return pieces;
 	}
 
 	@Override
