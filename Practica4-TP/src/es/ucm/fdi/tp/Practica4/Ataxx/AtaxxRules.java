@@ -126,10 +126,7 @@ public class AtaxxRules implements GameRules{
 					juego = State.Won;
 				}
 			}
-		}	
-		else if(board.getPieceCount(jugador) == null){
-			juego = State.Won;
-		}
+		}		
 		return new Pair<State, Piece>(juego, jugador);
 	}
 	 /**
@@ -186,7 +183,7 @@ public class AtaxxRules implements GameRules{
 		int fila = tablero.getRows();
 		int columna = tablero.getCols();
 		List<GameMove> movimientoValido = new ArrayList<GameMove>();
-		for(int f = Math.max(row - 2, col); f <= Math.min(row + 2, fila - 1); f++){
+		for(int f = Math.max(row - 2, 0); f <= Math.min(row + 2, fila - 1); f++){
 			for(int c = Math.max(col - 2, 0); c <= Math.min(col + 2, columna - 1); c++){
 				if(tablero.getPosition(f, c) == null){
 					movimientoValido.add(new AtaxxMove(row, col, f, c, ficha));

@@ -19,26 +19,20 @@ public class AtaxxRandomPlayer extends Player {
 
 	@Override
 	public GameMove requestMove(Piece p, Board board, List<Piece> pieces, GameRules rules) {
-		GameMove movimiento = null;
+		int opciones, opcion;
 		List<GameMove>movimientoValido = new ArrayList<GameMove>();		
 		if(board.isFull()){
 			throw new GameError("El tablero esta lleno, no se puede mover mas fichas");
 		}
 		else{
-			try{ // Da una excepcion cuando no hay piezas, supongo que es porque no tengo en esa opcion en el Pair, pero mejor revisarlo
-				if(board.getPieceCount(p)!= 0/*pieces.contains(p)*/){
-					movimientoValido = rules.validMoves(board, pieces, p);
-					if(movimientoValido.size() != - 1){
-						int opcion = Utils.randomInt(movimientoValido.size());
-						movimiento = movimientoValido.get(opcion);
-					}
-				}
-			}catch(NumberFormatException e){
-				throw new NumberFormatException("No hay fichas en el tablero");
+			movimientoValido = rules.validMoves(board, pieces, p);
+			opciones = movimientoValido.size();
+			if(opciones <= 0){
+				throw new GameError("Jugador " + p.getId() + " no tiene más fichas para mover");							
 			}
-			
+			opcion = Utils.randomInt(opciones);
 		}
-		return movimiento;
+		return movimientoValido.get(opcion);
 	}
 	
 	/**
