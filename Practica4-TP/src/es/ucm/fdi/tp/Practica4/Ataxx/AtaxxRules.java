@@ -17,6 +17,7 @@ public class AtaxxRules implements GameRules{
 	private int dim;
 	private int obstaculo;
 	private final Piece Obstaculo = new Piece("*");
+	private boolean jugadoresBloqueados = false;
 	
 	
 	/**
@@ -109,12 +110,13 @@ public class AtaxxRules implements GameRules{
 
 	@Override
 	public Pair<State, Piece> updateState(Board board, List<Piece> pieces, Piece turn) {
-		Piece jugador = null;
+		//Pair<State, Piece> resultado = new Pair<State, Piece>(State.InPlay, null);
 		State juego = State.InPlay;
+		Piece jugador = null;
 		int[] jugadores = new int[pieces.size()];
 		int valorAlto = 0;
 		
-		if(board.isFull()){
+		if(board.isFull() || this.jugadoresBloqueados){
 			for(int i = 0; i < pieces.size(); i++){
 				jugadores[i] = board.getPieceCount(pieces.get(i));
 				if(valorAlto == jugadores[i]){
@@ -124,6 +126,7 @@ public class AtaxxRules implements GameRules{
 					valorAlto = jugadores[i];
 					jugador = pieces.get(i);
 					juego = State.Won;
+					break;
 				}
 			}
 		}		
@@ -149,7 +152,7 @@ public class AtaxxRules implements GameRules{
 	@Override
 	public Piece nextPlayer(Board board, List<Piece> pieces, Piece turn) {
 		List<Piece> piecesAux = pieces;
-		int i = piecesAux.indexOf(turn);
+		int i = piecesAux.indexOf(turn);		
 		return piecesAux.get((i+1)% piecesAux.size());
 	}
 

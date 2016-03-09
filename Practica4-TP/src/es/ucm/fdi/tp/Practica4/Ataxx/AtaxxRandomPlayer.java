@@ -20,7 +20,7 @@ public class AtaxxRandomPlayer extends Player {
 	@Override
 	public GameMove requestMove(Piece p, Board board, List<Piece> pieces, GameRules rules) {
 		int opciones, opcion;
-		List<GameMove>movimientoValido = new ArrayList<GameMove>();		
+		List<GameMove> movimientoValido = new ArrayList<GameMove>();		
 		if(board.isFull()){
 			throw new GameError("El tablero esta lleno, no se puede mover mas fichas");
 		}
@@ -28,7 +28,7 @@ public class AtaxxRandomPlayer extends Player {
 			movimientoValido = rules.validMoves(board, pieces, p);
 			opciones = movimientoValido.size();
 			if(opciones <= 0){
-				throw new GameError("Jugador " + p.getId() + " no tiene más fichas para mover");							
+				throw new GameError("Jugador " + p.getId() + " no tiene más fichas para mover");				
 			}
 			opcion = Utils.randomInt(opciones);
 		}
