@@ -2,16 +2,23 @@ package es.ucm.fdi.tp.Practica4.Ataxx;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
+import es.ucm.fdi.tp.basecode.bgame.control.ConsolePlayer;
 import es.ucm.fdi.tp.basecode.bgame.control.Controller;
+import es.ucm.fdi.tp.basecode.bgame.control.DummyAIPlayer;
 import es.ucm.fdi.tp.basecode.bgame.control.GameFactory;
 import es.ucm.fdi.tp.basecode.bgame.control.Player;
 import es.ucm.fdi.tp.basecode.bgame.model.AIAlgorithm;
 import es.ucm.fdi.tp.basecode.bgame.model.GameError;
+import es.ucm.fdi.tp.basecode.bgame.model.GameMove;
 import es.ucm.fdi.tp.basecode.bgame.model.GameObserver;
 import es.ucm.fdi.tp.basecode.bgame.model.GameRules;
 import es.ucm.fdi.tp.basecode.bgame.model.Observable;
 import es.ucm.fdi.tp.basecode.bgame.model.Piece;
+import es.ucm.fdi.tp.basecode.bgame.views.GenericConsoleView;
+import es.ucm.fdi.tp.basecode.connectN.ConnectNMove;
+import es.ucm.fdi.tp.basecode.connectN.ConnectNRandomPlayer;
 
 public class AtaxxFactory implements GameFactory {
 	private int dim;
@@ -69,20 +76,19 @@ public class AtaxxFactory implements GameFactory {
 
 	@Override
 	public Player createConsolePlayer() {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<GameMove> possibleMoves = new ArrayList<GameMove>();
+		possibleMoves.add(new AtaxxMove());
+		return new ConsolePlayer(new Scanner(System.in), possibleMoves);
 	}
 
 	@Override
 	public Player createRandomPlayer() {
-		// TODO Auto-generated method stub
-		return null;
+		return new AtaxxRandomPlayer();
 	}
 
 	@Override
 	public Player createAIPlayer(AIAlgorithm alg) {
-		// TODO Auto-generated method stub
-		return null;
+		return new DummyAIPlayer(createRandomPlayer(), 1000);
 	}
 
 	@Override
@@ -95,14 +101,14 @@ public class AtaxxFactory implements GameFactory {
 
 	@Override
 	public void createConsoleView(Observable<GameObserver> game, Controller ctrl) {
-		// TODO Auto-generated method stub
+		new GenericConsoleView(game, ctrl);
 		
 	}
 
 	@Override
 	public void createSwingView(Observable<GameObserver> game, Controller ctrl, Piece viewPiece, Player randPlayer,
 			Player aiPlayer) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("There is no swing view");
 		
 	}
 

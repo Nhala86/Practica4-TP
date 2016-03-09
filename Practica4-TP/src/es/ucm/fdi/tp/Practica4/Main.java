@@ -239,6 +239,11 @@ public class Main {
 	 * utiliza, por lo que siempre es {@code null}.
 	 */
 	private static AIAlgorithm aiPlayerAlg;
+	
+	/**
+	 * Numero entero de obstaculos en el tablero
+	 */
+	private static Integer obstaculo;
 
 	/**
 	 * Processes the command-line arguments and modify the fields of this
@@ -267,9 +272,10 @@ public class Main {
 		cmdLineOptions.addOption(constructGameOption()); // -g or --game
 		cmdLineOptions.addOption(constructViewOption()); // -v or --view
 		cmdLineOptions.addOption(constructMlutiViewOption()); // -m or
-																// --multiviews
+		// --multiviews
 		cmdLineOptions.addOption(constructPlayersOption()); // -p or --players
 		cmdLineOptions.addOption(constructDimensionOption()); // -d or --dim
+		cmdLineOptions.addOption(constructObstaculoOption()); // -o or --obstaculo
 
 		// parse the command line as provided in args
 		//
@@ -278,6 +284,7 @@ public class Main {
 			CommandLine line = parser.parse(cmdLineOptions, args);
 			parseHelpOption(line, cmdLineOptions);
 			parseDimOptionn(line);
+			parseObstaculoOption(line);
 			parseGameOption(line);
 			parseViewOption(line);
 			parseMultiViewOption(line);
@@ -300,6 +307,32 @@ public class Main {
 			System.exit(1);
 		}
 
+	}
+	
+	/**
+	 * Metodo que crea el parse de los Obstaculos
+	 * @param line el comando "-o" que debes meter para meter obstaculos en el tablero
+	 * @throws ParseException error por meter el comando erroneo
+	 */
+	private static void parseObstaculoOption(CommandLine line) throws ParseException {
+		String ValorObstaculos = line.getOptionValue("o");
+		if(ValorObstaculos != null){
+			try{
+				obstaculo = Integer.parseInt(ValorObstaculos);
+			}catch(NumberFormatException e){
+				throw new ParseException("El numero de obstaculos es incorrecto" + ValorObstaculos);
+			}
+		}		
+	}
+
+	/**
+	 * Metodo que construye la opcion de los obstaculos
+	 * @return un char de la opcion obstaculo , un string del obstaculo o un mensaje de informacion
+	 */
+	private static Option constructObstaculoOption() {
+		Option opcion = new Option("o", "obtaculo", true, "El valor de los obstaculos colocados en el tablero, ha de ser positivo");
+		opcion.setArgName("numero de obtaculos");
+		return opcion;
 	}
 
 	/**
@@ -534,7 +567,17 @@ public class Main {
 			gameFactory = new TicTacToeFactory();
 			break;
 		case Ataxx:
-			gameFactory = new AtaxxFactory();
+			if (dimRows != null && dimCols != null && dimRows == dimCols) {
+				if(obstaculo != null){
+					gameFactory = new AtaxxFactory(dimRows, obstaculo);
+				}
+				else{
+					gameFactory = new AtaxxFactory(dimRows);
+				}				
+			} 
+			else {
+				gameFactory = new AtaxxFactory();
+			}
 			break;
 		default:
 			throw new UnsupportedOperationException("Something went wrong! This program point should be unreachable!");

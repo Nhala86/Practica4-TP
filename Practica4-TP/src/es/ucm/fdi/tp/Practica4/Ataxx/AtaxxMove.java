@@ -61,21 +61,59 @@ public class AtaxxMove extends GameMove{
 	@Override
 	public void execute(Board board, List<Piece> pieces) {
 		Piece piece = getPiece();
-		if (board.getPosition(row, col) == null) {
-			throw new GameError("position (" + row + "," + col + ") is void!");
+		int distancia = Math.max(Math.abs(this.row - this.filaDestino), Math.abs(this.col - this.columnaDestino));
+		if (board.getPosition(this.row, this.col) == null) {
+			throw new GameError("position (" + this.row + "," + this.col + ") is void!");
 		} 
 		else if (board.getPosition(this.filaDestino, this.columnaDestino ) != null) {
 			throw new GameError("position (" + this.filaDestino + "," + this.columnaDestino + ") is already occupied!");
 		}
 		else if(board.getPosition(this.row, this.col) != piece){
 			throw new GameError("La pieza en (" + this.row + "," + this.col + ") es de otro jugador");
-		}		
+		}
+		else if(distancia > 2){
+			throw new GameError("La posicion (" + this.filaDestino + "," + this.columnaDestino + ")es mayor que 2");
+		}
+		else if(board.getPieceCount(piece) <= 0){
+			throw new GameError("La ficha del tipo " + piece + "no es valida");
+		}
+		if(distancia == 1){
+			board.setPosition(this.filaDestino, this.columnaDestino, piece);
+			board.setPieceCount(piece, board.getPieceCount(piece)+ 1);
+		}
+		else if(distancia == 2){
+			board.setPosition(this.filaDestino, this.columnaDestino, piece);
+			board.setPosition(this.row, this.col, null);
+		}
+		this.convertirFichas(board, pieces, piece);
+	}
+		
+	/**
+	 * Metodo que convierte a las fichas de alrededor
+	 * @param tablero se le pasa el tablero del juego
+	 * @param pieces la lista de fichas
+	 * @param ficha la ficha del jugador
+	 */
+	private void convertirFichas(Board tablero, List<Piece> pieces, Piece ficha){
+		int row = tablero.getRows();
+		int col = tablero.getCols();
+		for(int f = Math.max(this.filaDestino - 1, 0); f <= Math.min(this.filaDestino + 1, row -1); f++){
+			for(int c = Math.max(this.columnaDestino - 1, 0); c <= Math.min(this.columnaDestino + 1, col -1); c++){
+				if(tablero.getPosition(f, c) != null && pieces.contains(tablero.getPosition(f, c))){
+					if(ficha.getId() != tablero.getPosition(f, c).getId()){
+						tablero.setPieceCount(tablero.getPosition(f, c), tablero.getPieceCount(tablero.getPosition(f, c))- 1);
+						tablero.setPieceCount(ficha, tablero.getPieceCount(ficha) + 1);
+						tablero.setPosition(f, c, ficha);
+					}
+				}
+			}
+		}
 	}
 
 	@Override
 	public GameMove fromString(Piece p, String str) {
 		String[] words = str.split(" ");
-		if (words.length != 2) {
+		if (words.length != 4) {
 			return null;
 		}
 		try {

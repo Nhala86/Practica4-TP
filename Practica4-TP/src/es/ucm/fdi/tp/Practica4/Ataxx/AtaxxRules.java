@@ -2,6 +2,7 @@ package es.ucm.fdi.tp.Practica4.Ataxx;
 
 import java.util.List;
 
+import es.ucm.fdi.tp.basecode.bgame.Utils;
 import es.ucm.fdi.tp.basecode.bgame.model.Board;
 import es.ucm.fdi.tp.basecode.bgame.model.FiniteRectBoard;
 import es.ucm.fdi.tp.basecode.bgame.model.Game;
@@ -15,6 +16,8 @@ import es.ucm.fdi.tp.basecode.bgame.model.Piece;
 public class AtaxxRules implements GameRules{
 	private int dim;
 	private int obstaculo;
+	private final Piece Obstaculo = new Piece("*");
+	
 	
 	/**
 	 * Constructora a la que se le pasa el parametro de entrada de dimension del tablero
@@ -49,12 +52,10 @@ public class AtaxxRules implements GameRules{
 			}
 		}
 	}
-
 	
 	@Override
 	public String gameDesc() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Bienvenido a Ataxx con un tablero " + this.dim + "X" + this.dim;
 	}
 
 	@Override
@@ -82,6 +83,11 @@ public class AtaxxRules implements GameRules{
 				tablero.setPosition(this.dim/2, this.dim-1, p4);
 				tablero.setPieceCount(p4, 2);
 			}
+			
+			
+		}
+		if(this.obstaculo > 0){
+			PonerObstaculos(tablero);
 		}
 		return tablero;
 	}
@@ -112,6 +118,22 @@ public class AtaxxRules implements GameRules{
 		
 		
 		return new Pair<State, Piece>(juego, jugador);
+	}
+	 /**
+	  * Metodo que crea los obstaculos en el tablero
+	  * @param tablero del juego con dimension * dimension
+	  */
+	private void PonerObstaculos(Board tablero){
+		int cont = this.obstaculo;
+		int f, c;
+		while(cont > 0){
+			f = Utils.randomInt(this.dim);
+			c = Utils.randomInt(this.dim);
+			if(tablero.getPosition(f, c) == null){
+				tablero.setPosition(f, c, this.Obstaculo);
+				cont--;
+			}
+		}		
 	}
 	
 	@Override
