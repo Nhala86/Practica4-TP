@@ -1,11 +1,11 @@
 package es.ucm.fdi.tp.Practica4.Ataxx;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import es.ucm.fdi.tp.basecode.bgame.Utils;
 import es.ucm.fdi.tp.basecode.bgame.model.Board;
 import es.ucm.fdi.tp.basecode.bgame.model.FiniteRectBoard;
-import es.ucm.fdi.tp.basecode.bgame.model.Game;
 import es.ucm.fdi.tp.basecode.bgame.model.Game.State;
 import es.ucm.fdi.tp.basecode.bgame.model.GameError;
 import es.ucm.fdi.tp.basecode.bgame.model.GameMove;
@@ -111,12 +111,22 @@ public class AtaxxRules implements GameRules{
 	public Pair<State, Piece> updateState(Board board, List<Piece> pieces, Piece turn) {
 		Piece jugador = null;
 		State juego = State.InPlay;
+		int[] jugadores = new int[pieces.size()];
+		int valorAlto = 0;
 		
 		if(board.isFull()){
-			
-		}
-		
-		
+			for(int i = 0; i < pieces.size(); i++){
+				jugadores[i] = board.getPieceCount(pieces.get(i));
+				if(valorAlto == jugadores[i]){
+					juego = State.Draw;
+				}
+				else if(valorAlto < jugadores[i]){
+					valorAlto = jugadores[i];
+					jugador = pieces.get(i);
+					juego = State.Won;
+				}
+			}
+		}		
 		return new Pair<State, Piece>(juego, jugador);
 	}
 	 /**
@@ -150,7 +160,37 @@ public class AtaxxRules implements GameRules{
 
 	@Override
 	public List<GameMove> validMoves(Board board, List<Piece> playersPieces, Piece turn) {
-		return null;
+		List<GameMove> movimientoValido = new ArrayList<GameMove>();
+		for(int f = 0; f < board.getRows(); f++){
+			for(int c = 0; c < board.getCols(); c++){
+				if(board.getPosition(f, c) == turn){
+					movimientoValido.addAll(MovimientoFichaValido(board, turn, f, c));
+				}
+			}
+		}
+		return movimientoValido;
+	}
+	
+	/**
+	 * Metodo que comprueba que el ovimiento de la ficha sea correcto
+	 * @param tablero de dimension NxN
+	 * @param ficha que se juega en ese turno
+	 * @param row valor entero positivo de fila
+	 * @param col valor entero positivo de columna
+	 * @return un movimiento valido
+	 */
+	private List<GameMove> MovimientoFichaValido(Board tablero, Piece ficha, int row, int col) {
+		int fila = tablero.getRows();
+		int columna = tablero.getCols();
+		List<GameMove> movimientoValido = new ArrayList<GameMove>();
+		for(int f = Math.max(row - 2, col); f <= Math.min(row + 2, fila - 1); f++){
+			for(int c = Math.max(col - 2, 0); c <= Math.min(col + 2, columna - 1); c++){
+				if(tablero.getPosition(f, c) == null){
+					movimientoValido.add(new AtaxxMove(row, col, f, c, ficha));
+				}
+			}
+		}
+		return movimientoValido;
 	}
 
 }

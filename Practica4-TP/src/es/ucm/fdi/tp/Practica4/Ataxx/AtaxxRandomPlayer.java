@@ -1,14 +1,16 @@
 package es.ucm.fdi.tp.Practica4.Ataxx;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import es.ucm.fdi.tp.basecode.bgame.Utils;
 import es.ucm.fdi.tp.basecode.bgame.control.Player;
 import es.ucm.fdi.tp.basecode.bgame.model.Board;
 import es.ucm.fdi.tp.basecode.bgame.model.GameError;
 import es.ucm.fdi.tp.basecode.bgame.model.GameMove;
 import es.ucm.fdi.tp.basecode.bgame.model.GameRules;
 import es.ucm.fdi.tp.basecode.bgame.model.Piece;
-import es.ucm.fdi.tp.basecode.connectN.ConnectNMove;
+import javafx.util.Pair;
 
 public class AtaxxRandomPlayer extends Player {
 	/**
@@ -18,11 +20,26 @@ public class AtaxxRandomPlayer extends Player {
 
 	@Override
 	public GameMove requestMove(Piece p, Board board, List<Piece> pieces, GameRules rules) {
-		int row, col, filaDestino, columnaDestino;
+		GameMove movimiento = null;
+		List<GameMove>movimientoValido = new ArrayList<GameMove>();		
 		if(board.isFull()){
 			throw new GameError("El tablero esta lleno, no se puede mover mas fichas");
 		}
-		return null;
+		else{
+			try{
+				if(pieces.contains(p)){
+					movimientoValido = rules.validMoves(board, pieces, p);
+					if(movimientoValido.size() != - 1){
+						int opcion = Utils.randomInt(movimientoValido.size());
+						movimiento = movimientoValido.get(opcion);
+					}
+				}
+			}catch(NumberFormatException e){
+				throw new NumberFormatException("No hay fichas en el tablero");
+			}
+			
+		}
+		return movimiento;
 	}
 	
 	/**

@@ -17,8 +17,6 @@ import es.ucm.fdi.tp.basecode.bgame.model.GameRules;
 import es.ucm.fdi.tp.basecode.bgame.model.Observable;
 import es.ucm.fdi.tp.basecode.bgame.model.Piece;
 import es.ucm.fdi.tp.basecode.bgame.views.GenericConsoleView;
-import es.ucm.fdi.tp.basecode.connectN.ConnectNMove;
-import es.ucm.fdi.tp.basecode.connectN.ConnectNRandomPlayer;
 
 public class AtaxxFactory implements GameFactory {
 	private int dim;
