@@ -10,7 +10,6 @@ import es.ucm.fdi.tp.basecode.bgame.model.GameError;
 import es.ucm.fdi.tp.basecode.bgame.model.GameMove;
 import es.ucm.fdi.tp.basecode.bgame.model.GameRules;
 import es.ucm.fdi.tp.basecode.bgame.model.Piece;
-import javafx.util.Pair;
 
 public class AtaxxRandomPlayer extends Player {
 	/**
@@ -26,8 +25,8 @@ public class AtaxxRandomPlayer extends Player {
 			throw new GameError("El tablero esta lleno, no se puede mover mas fichas");
 		}
 		else{
-			try{
-				if(pieces.contains(p)){
+			try{ // Da una excepcion cuando no hay piezas, supongo que es porque no tengo en esa opcion en el Pair, pero mejor revisarlo
+				if(board.getPieceCount(p)!= 0/*pieces.contains(p)*/){
 					movimientoValido = rules.validMoves(board, pieces, p);
 					if(movimientoValido.size() != - 1){
 						int opcion = Utils.randomInt(movimientoValido.size());

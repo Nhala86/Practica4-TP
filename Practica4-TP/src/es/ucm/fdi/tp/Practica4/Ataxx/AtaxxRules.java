@@ -126,7 +126,10 @@ public class AtaxxRules implements GameRules{
 					juego = State.Won;
 				}
 			}
-		}		
+		}	
+		else if(board.getPieceCount(jugador) == null){
+			juego = State.Won;
+		}
 		return new Pair<State, Piece>(juego, jugador);
 	}
 	 /**
