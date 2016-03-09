@@ -6,6 +6,7 @@ import es.ucm.fdi.tp.basecode.bgame.model.Board;
 import es.ucm.fdi.tp.basecode.bgame.model.FiniteRectBoard;
 import es.ucm.fdi.tp.basecode.bgame.model.Game;
 import es.ucm.fdi.tp.basecode.bgame.model.Game.State;
+import es.ucm.fdi.tp.basecode.bgame.model.GameError;
 import es.ucm.fdi.tp.basecode.bgame.model.GameMove;
 import es.ucm.fdi.tp.basecode.bgame.model.GameRules;
 import es.ucm.fdi.tp.basecode.bgame.model.Pair;
@@ -13,11 +14,43 @@ import es.ucm.fdi.tp.basecode.bgame.model.Piece;
 
 public class AtaxxRules implements GameRules{
 	private int dim;
+	private int obstaculo;
 	
+	/**
+	 * Constructora a la que se le pasa el parametro de entrada de dimension del tablero
+	 * @param dim valor entero positivo de la dimension del tablero
+	 */
 	public AtaxxRules(int dim){
-		this.dim = dim;
+		if(dim < 5){
+			throw new GameError("La dimension debe ser mayor o igual que 5" + dim);
+		}
+		else{
+			this.dim = dim;
+			this.obstaculo = 0;
+		}
+	}
+	
+	/**
+	 * Constructora a la que se le pasa el parametro de entrada de dimension y obstaculos del tablero
+	 * @param dim valor entero positivo de la dimension del tablero
+	 * @param obstaculo valor entero de la cantidad de obstaculos que hay en el tablero
+	 */
+	public AtaxxRules(int dim, int obstaculo){
+		if(dim < 5){
+			throw new GameError("La dimension debe ser mayor o igual que 5" + dim);
+		}
+		else{
+			if(obstaculo > (dim * dim)- 8){
+				throw new GameError("Los obstaculos deben ser menor que " + dim * dim);
+			}
+			else{
+				this.dim = dim;
+				this.obstaculo = obstaculo;
+			}
+		}
 	}
 
+	
 	@Override
 	public String gameDesc() {
 		// TODO Auto-generated method stub

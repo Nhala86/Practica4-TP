@@ -6,57 +6,49 @@ import es.ucm.fdi.tp.basecode.bgame.model.Board;
 import es.ucm.fdi.tp.basecode.bgame.model.GameError;
 import es.ucm.fdi.tp.basecode.bgame.model.GameMove;
 import es.ucm.fdi.tp.basecode.bgame.model.Piece;
-import es.ucm.fdi.tp.basecode.connectN.ConnectNMove;
 
 public class AtaxxMove extends GameMove{
 	
 	/**
-	 * The row where to place the piece return by {@link GameMove#getPiece()}.
-	 * <p>
 	 * Fila en la que se coloca la ficha devuelta por
 	 * {@link GameMove#getPiece()}.
 	 */
 	protected int row;
 
 	/**
-	 * The column where to place the piece return by {@link GameMove#getPiece()}
-	 * .
-	 * <p>
 	 * Columna en la que se coloca la ficha devuelta por
 	 * {@link GameMove#getPiece()}.
 	 */
 	protected int col;
 
 	/**
-	 * Fila en la que se coloca la ficha devuelta por
-	 * {@link GameMove#getPiece()}.
+	 * Fila de destino en la que se coloca la ficha una vez movida	
 	 */	
 	protected int filaDestino;
 	
 	/**
-	 * Columna en la que se coloca la ficha devuelta por
-	 * {@link GameMove#getPiece()}.
+	 * Columna de destino en la que se coloca la ficha una vez movida	 
 	 */
 	protected int columnaDestino;
 	
 	/**
-	 * 
+	 * Numero de serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Constructora instanciada a vacio
+	 * Constructora instanciada a vacio por defecto
 	 */
 	public AtaxxMove(){
 		
 	}
 	 /**
-	  * 
-	  * @param row
-	  * @param col
-	  * @param filaDestino
-	  * @param columnaDestino
-	  * @param p
+	  * Constructora a la que se le pasa los parametros de las filas, columnas y ficha
+	  * @param row valor entero de la fila en la que se encuentra la ficha antes de moverse
+	  * @param col valor entero de la columna en la que se encuentra la ficha antes de moverse
+	  * @param filaDestino valor entero de la fila en la que se encuentra la ficha despues de ser movida
+	  * @param columnaDestino valor entero de la columna en la que se encuentra la ficha despues de ser movida
+	  * @param p ficha que se le pasa por parametros
 	  */
 	public AtaxxMove(int row, int col, int filaDestino, int columnaDestino, Piece p){
 			super(p);
@@ -99,15 +91,15 @@ public class AtaxxMove extends GameMove{
 	}
 
 	/**
-	 * 
-	 * @param row2
-	 * @param col2
-	 * @param filaDestino
-	 * @param columnaDestino
-	 * @param p
-	 * @return
+	 * Metodo creador de movimiento que llama a la constructora de AtaxxMove
+	 * @param row valor entero de la fila en la que se encuentra la ficha antes de moverse
+	 * @param col valor entero de la columna en la que se encuentra la ficha antes de moverse
+	 * @param filaDestino valor entero de la fila en la que se encuentra la ficha despues de ser movida
+	 * @param columnaDestino valor entero de la columna en la que se encuentra la ficha despues de ser movida
+	 * @param p ficha que se le pasa por parametros
+	 * @return movimiento con los parametros de filas, columnas y ficha
 	 */
-	private GameMove createMove(int row2, int col2, int filaDestino, int columnaDestino, Piece p) {
+	private GameMove createMove(int row, int col, int filaDestino, int columnaDestino, Piece p) {
 		return new AtaxxMove(row, col, filaDestino, columnaDestino, p);
 	}
 
