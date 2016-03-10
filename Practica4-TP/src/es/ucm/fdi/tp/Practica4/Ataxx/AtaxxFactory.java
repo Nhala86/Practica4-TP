@@ -58,7 +58,7 @@ public class AtaxxFactory implements GameFactory {
 		}
 		else{
 			if(obstaculo > (dim * dim)- 8){
-				throw new GameError("Los obstaculos deben ser menor que " + dim * dim);
+				throw new GameError("Los obstaculos deben ser menor o igual que " + ((dim * dim)- 8));
 			}
 			else{
 				this.dim = dim;

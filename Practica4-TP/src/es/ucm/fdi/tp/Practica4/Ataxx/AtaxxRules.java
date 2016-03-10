@@ -17,7 +17,7 @@ public class AtaxxRules implements GameRules{
 	private int dim;
 	private int obstaculo;
 	private final Piece Obstaculo = new Piece("*");
-	private boolean jugadoresBloqueados = false;
+	
 	
 	
 	/**
@@ -109,33 +109,45 @@ public class AtaxxRules implements GameRules{
 	}
 
 	@Override
-	public Pair<State, Piece> updateState(Board board, List<Piece> pieces, Piece turn) {
-		//Pair<State, Piece> resultado = new Pair<State, Piece>(State.InPlay, null);
-		State juego = State.InPlay;
-		Piece jugador = null;
-		int[] jugadores = new int[pieces.size()];
-		int valorAlto = 0;
-		
-		if(board.isFull() || this.jugadoresBloqueados){
-			for(int i = 0; i < pieces.size(); i++){
-				jugadores[i] = board.getPieceCount(pieces.get(i));
-				if(valorAlto == jugadores[i]){
-					juego = State.Draw;
-				}
-				else if(valorAlto < jugadores[i]){
-					valorAlto = jugadores[i];
-					jugador = pieces.get(i);
-					juego = State.Won;
-					break;
+	public Pair<State, Piece> updateState(Board board, List<Piece> pieces, Piece turn) {		
+		Pair<State, Piece> resultado = new Pair<State, Piece>(State.InPlay, null);
+		if(board.isFull()){
+			resultado = resultado(board, pieces, turn);
+		}
+		else{
+			if(this.nextPlayer(board, pieces, turn).equals(turn)){
+				if(this.bloqueoResuelto(board, pieces)){
+					resultado = resultado(board, pieces, turn);
 				}
 			}
-		}		
-		return new Pair<State, Piece>(juego, jugador);
+		}
+		return resultado;
 	}
-	 /**
-	  * Metodo que crea los obstaculos en el tablero
-	  * @param tablero del juego con dimension * dimension
-	  */
+	
+	/**
+	 * Metodo que evita que la partida se bloque porque ningun jugador puede mover sus fichas
+	 * @param board parametro que le pasa el tablero con su dimension
+	 * @param pieces parametro de fichas de los jugadores del juego
+	 * @return True si el numero de movimientos posibles es 0. False si hay movimientos posibles
+	 */
+	private boolean bloqueoResuelto(Board board, List<Piece> pieces) {
+		boolean Ok = false;
+		int contador = 0;
+		for(int i = 0; i < pieces.size(); i++){
+			if(this.validMoves(board, pieces, pieces.get(i)).size() <= 0){
+				contador++;
+			}
+		}
+		if(contador == pieces.size() - 1){
+			Ok = true;
+		}
+		return Ok;
+	}	
+
+	/**
+	 * Metodo que crea los obstaculos en el tablero
+	 * @param tablero del juego con dimension * dimension
+	 */
 	private void PonerObstaculos(Board tablero){
 		int cont = this.obstaculo;
 		int f, c;
@@ -151,9 +163,17 @@ public class AtaxxRules implements GameRules{
 	
 	@Override
 	public Piece nextPlayer(Board board, List<Piece> pieces, Piece turn) {
-		List<Piece> piecesAux = pieces;
-		int i = piecesAux.indexOf(turn);		
-		return piecesAux.get((i+1)% piecesAux.size());
+		Piece ficha;
+		int x = pieces.indexOf(turn);
+		int valor, contador = 1;
+		int numeroJugadores = pieces.size();
+		
+		do{
+			ficha = pieces.get((x + contador)% numeroJugadores);
+			valor = this.validMoves(board, pieces, ficha).size();
+			contador++;
+		}while(valor <= 0 && contador <= numeroJugadores);			
+		return ficha;		
 	}
 
 	@Override
@@ -162,11 +182,12 @@ public class AtaxxRules implements GameRules{
 	}
 
 	@Override
-	public List<GameMove> validMoves(Board board, List<Piece> playersPieces, Piece turn) {
+	public List<GameMove> validMoves(Board board, List<Piece> playersPieces, Piece turn) {		
 		List<GameMove> movimientoValido = new ArrayList<GameMove>();
 		for(int f = 0; f < board.getRows(); f++){
 			for(int c = 0; c < board.getCols(); c++){
-				if(board.getPosition(f, c) == turn){
+				Piece ficha = turn;
+				if(board.getPosition(f, c) == ficha){
 					movimientoValido.addAll(MovimientoFichaValido(board, turn, f, c));
 				}
 			}
@@ -175,7 +196,7 @@ public class AtaxxRules implements GameRules{
 	}
 	
 	/**
-	 * Metodo que comprueba que el ovimiento de la ficha sea correcto
+	 * Metodo que comprueba que el movimiento de la ficha sea correcto
 	 * @param tablero de dimension NxN
 	 * @param ficha que se juega en ese turno
 	 * @param row valor entero positivo de fila
@@ -194,6 +215,33 @@ public class AtaxxRules implements GameRules{
 			}
 		}
 		return movimientoValido;
+	}
+	 /**
+	  * Metodo que devuelve el estado del tablero cuando ya no hay más movimientos 
+	  * @param tablero parametro de Board que le pasa el tablero
+	  * @param pieces parametro de Pieces que le pasa una piece
+	  * @param ficha parametro de Piece que le pasa una ficha
+	  * @return el estado de un jugador al terminar la partida
+	  */
+	private Pair<State, Piece> resultado(Board tablero, List<Piece> pieces, Piece ficha){
+		State juego = State.InPlay;
+		Piece jugador = null;
+		int[] jugadorEnJuego = new int[pieces.size()];
+		int valorAlto = 0;
+		
+		for(int i = 0; i < pieces.size(); i++){
+			jugadorEnJuego[i] = tablero.getPieceCount(pieces.get(i));
+			if(valorAlto == jugadorEnJuego[i]){
+				juego = State.Draw;
+			}
+			else if(valorAlto < jugadorEnJuego[i]){
+				valorAlto = jugadorEnJuego[i];
+				jugador = pieces.get(i);
+				juego = State.Won;
+				}
+		}		
+		Pair<State, Piece> resultado = new Pair <State, Piece>(juego, jugador);
+		return resultado;
 	}
 
 }

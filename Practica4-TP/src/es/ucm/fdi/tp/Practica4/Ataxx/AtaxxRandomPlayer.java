@@ -29,23 +29,9 @@ public class AtaxxRandomPlayer extends Player {
 			opciones = movimientoValido.size();
 			if(opciones <= 0){
 				throw new GameError("Jugador " + p.getId() + " no tiene más fichas para mover");				
-			}
-			opcion = Utils.randomInt(opciones);
+			}			
 		}
+		opcion = Utils.randomInt(opciones);
 		return movimientoValido.get(opcion);
 	}
-	
-	/**
-	 * Metodo que crea un nuevo movimiento al que se le pasa las filas, columnas y ficha
-	 * @param row valor entero de la fila en la que se encuentra la ficha antes de moverse
-	 * @param col valor entero de la columna en la que se encuentra la ficha antes de moverse
-	 * @param filaDestino valor entero de la fila en la que se encuentra la ficha despues de ser movida
-	 * @param columnaDestino valor entero de la columna en la que se encuentra la ficha despues de ser movida
-	 * @param p ficha que se le pasa por parametros
-	 * @return movimiento con los parametros de filas, columnas y ficha
-	 */	 
-	protected GameMove createMove(int row, int col, int filaDestino, int columnaDestino, Piece p) {
-		return new AtaxxMove(row, col, filaDestino, columnaDestino, p);
-	}
-
 }

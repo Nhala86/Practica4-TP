@@ -60,8 +60,9 @@ public class AtaxxMove extends GameMove{
 	
 	@Override
 	public void execute(Board board, List<Piece> pieces) {
-		Piece piece = getPiece();
+		Piece piece = getPiece();		
 		int distancia = Math.max(Math.abs(this.row - this.filaDestino), Math.abs(this.col - this.columnaDestino));
+		
 		if (board.getPosition(this.row, this.col) == null) {
 			throw new GameError("position (" + this.row + "," + this.col + ") is void!");
 		} 
@@ -77,6 +78,7 @@ public class AtaxxMove extends GameMove{
 		else if(board.getPieceCount(piece) <= 0){
 			throw new GameError("La ficha del tipo " + piece + "no es valida");
 		}
+		
 		if(distancia == 1){
 			board.setPosition(this.filaDestino, this.columnaDestino, piece);
 			board.setPieceCount(piece, board.getPieceCount(piece)+ 1);
@@ -137,7 +139,7 @@ public class AtaxxMove extends GameMove{
 	 * @param p ficha que se le pasa por parametros
 	 * @return movimiento con los parametros de filas, columnas y ficha
 	 */
-	private GameMove createMove(int row, int col, int filaDestino, int columnaDestino, Piece p) {
+	protected GameMove createMove(int row, int col, int filaDestino, int columnaDestino, Piece p) {
 		return new AtaxxMove(row, col, filaDestino, columnaDestino, p);
 	}
 
