@@ -39,7 +39,7 @@ public class AtaxxFactory implements GameFactory {
 	 */
 	public AtaxxFactory(int dim){
 		if(dim < 5){
-			throw new GameError("La dimension debe ser mayor o igual que 5" + dim);
+			throw new GameError("La dimension debe ser mayor o igual que 5. PARAMETRO:" + dim);
 		}
 		else{
 			this.dim = dim;
@@ -54,11 +54,11 @@ public class AtaxxFactory implements GameFactory {
 	 */
 	public AtaxxFactory(int dim, int obstaculo){
 		if(dim < 5){
-			throw new GameError("La dimension debe ser mayor o igual que 5" + dim);
+			throw new GameError("La dimension debe ser mayor o igual que 5. PARAMETRO:" + dim);
 		}
 		else{
-			if(obstaculo > (dim * dim)- 8){
-				throw new GameError("Los obstaculos deben ser menor o igual que " + ((dim * dim)- 8));
+			if(obstaculo > (dim * dim) / 10){
+				throw new GameError("El numero de obstaculos deben ser menor que el 10 % de la superficie. PARAMETRO: " + obstaculo);
 			}
 			else{
 				this.dim = dim;

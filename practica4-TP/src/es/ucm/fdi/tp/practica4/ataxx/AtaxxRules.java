@@ -16,9 +16,7 @@ import es.ucm.fdi.tp.basecode.bgame.model.Piece;
 public class AtaxxRules implements GameRules{
 	private int dim;
 	private int obstaculo;
-	private final Piece Obstaculo = new Piece("*");
-	
-	
+	private Piece Obstaculo = new Piece("*"); //Por Defecto sera asterisco salvo equivalencias
 	
 	/**
 	 * Constructora a la que se le pasa el parametro de entrada de dimension del tablero
@@ -26,7 +24,7 @@ public class AtaxxRules implements GameRules{
 	 */
 	public AtaxxRules(int dim){
 		if(dim < 5){
-			throw new GameError("La dimension debe ser mayor o igual que 5" + dim);
+			throw new GameError("La dimension debe ser mayor o igual que 5. PARAMETRO: " + dim);
 		}
 		else{
 			this.dim = dim;
@@ -40,17 +38,33 @@ public class AtaxxRules implements GameRules{
 	 * @param obstaculo valor entero de la cantidad de obstaculos que hay en el tablero
 	 */
 	public AtaxxRules(int dim, int obstaculo){
-		if(dim < 5){
-			throw new GameError("La dimension debe ser mayor o igual que 5" + dim);
-		}
+		if(dim < 5)
+			throw new GameError("La dimension debe ser mayor o igual que 5. PARAMETRO: " + dim);
 		else{
-			if(obstaculo > (dim * dim)- 8){
-				throw new GameError("Los obstaculos deben ser menor que " + dim * dim);
+			if(obstaculo > (dim * dim / 10)){ //Sería mejor exigir que el número de obstáculos no supera, por ejemplo, el 10% del tablero
+				throw new GameError("El numero de obstaculos deben ser menor que el 10 % de la superficie. PARAMETRO: " + obstaculo);
 			}
-			else{
-				this.dim = dim;
-				this.obstaculo = obstaculo;
-			}
+			this.dim = dim;
+			this.obstaculo = obstaculo;
+		}
+	}
+	
+	/**
+	 * Metodo que comprueba si algun jugador tiene ese tipo de ficha
+	 * @param pieces lista de fichas de los jugadores en el tablero
+	 * @return una ficha
+	 */
+	private Piece getObstPiece(List<Piece> pieces) {
+		int i = 0;
+		while ( true ) {
+		Piece piece = new Piece("*#"+i);
+		if ( !pieces.contains(piece) ) 
+			/*
+			 * para obstáculos no puedes usar simplemente e"*", hay que comprobar
+			 *  que no hay un jugador con la misma ficha.
+			 */
+		  return piece;
+		  i++;
 		}
 	}
 	
@@ -66,28 +80,45 @@ public class AtaxxRules implements GameRules{
 		Piece p1 = pieces.get(0);
 		tablero.setPosition(0, 0, p1);
 		tablero.setPosition(this.dim-1, this.dim-1, p1);
-		tablero.setPieceCount(p1, 2);
+		/*
+		 * no usar los métodos de piece-count, es para juegos que tienen limite
+		 * de fichas. Cuando necesitas el número de fichas cuéntalas.
+		 */
+		//tablero.setPieceCount(p1, 2);
 		
 		Piece p2 = pieces.get(1);
 		tablero.setPosition(0, this.dim-1, p2);
 		tablero.setPosition(this.dim-1, 0, p2);
-		tablero.setPieceCount(p2, 2);
+		/*
+		 * no usar los métodos de piece-count, es para juegos que tienen limite
+		 * de fichas. Cuando necesitas el número de fichas cuéntalas.
+		 */
+		//tablero.setPieceCount(p2, 2);
 		
 		if(pieces.size()> 2){
 			Piece p3 = pieces.get(2);
 			tablero.setPosition(0, this.dim/2, p3);
 			tablero.setPosition(this.dim-1, this.dim/2, p3);
-			tablero.setPieceCount(p3, 2);
+			/*
+			 * no usar los métodos de piece-count, es para juegos que tienen limite
+			 * de fichas. Cuando necesitas el número de fichas cuéntalas.
+			 */
+			//tablero.setPieceCount(p3, 2);
 			if(pieces.size()> 3){
 				Piece p4 = pieces.get(3);
 				tablero.setPosition(this.dim/2, 0, p4);
 				tablero.setPosition(this.dim/2, this.dim-1, p4);
-				tablero.setPieceCount(p4, 2);
+				/*
+				 * no usar los métodos de piece-count, es para juegos que tienen limite
+				 * de fichas. Cuando necesitas el número de fichas cuéntalas.
+				 */
+				//tablero.setPieceCount(p4, 2);
 			}
 			
 			
 		}
 		if(this.obstaculo > 0){
+			this.Obstaculo = getObstPiece(pieces); 
 			PonerObstaculos(tablero);
 		}
 		return tablero;
@@ -115,7 +146,7 @@ public class AtaxxRules implements GameRules{
 			resultado = resultado(board, pieces, turn);
 		}
 		else{
-			if(this.nextPlayer(board, pieces, turn).equals(turn)){
+			if(turn.equals(this.nextPlayer(board, pieces, turn))){
 				if(this.bloqueoResuelto(board, pieces)){
 					resultado = resultado(board, pieces, turn);
 				}
@@ -172,7 +203,10 @@ public class AtaxxRules implements GameRules{
 			ficha = pieces.get((x + contador)% numeroJugadores);
 			valor = this.validMoves(board, pieces, ficha).size();
 			contador++;
-		}while(valor <= 0 && contador <= numeroJugadores);			
+		}while(valor <= 0 && contador <= numeroJugadores);	
+		
+		if(contador > numeroJugadores) //nextPlayer tiene que devolver null si ninguno puede mover.
+			ficha = null;
 		return ficha;		
 	}
 
@@ -187,7 +221,7 @@ public class AtaxxRules implements GameRules{
 		for(int f = 0; f < board.getRows(); f++){
 			for(int c = 0; c < board.getCols(); c++){
 				Piece ficha = turn;
-				if(board.getPosition(f, c) == ficha){
+				if(ficha.equals(board.getPosition(f, c))){
 					movimientoValido.addAll(MovimientoFichaValido(board, turn, f, c));
 				}
 			}
@@ -230,7 +264,12 @@ public class AtaxxRules implements GameRules{
 		int valorAlto = 0;
 		
 		for(int i = 0; i < pieces.size(); i++){
-			jugadorEnJuego[i] = tablero.getPieceCount(pieces.get(i));
+			/*
+			 * no usar los métodos de piece-count, es para juegos que tienen limite
+			 * de fichas. Cuando necesitas el número de fichas cuéntalas.
+			 * jugadorEnJuego[i] = tablero.getPieceCount(pieces.get(i));
+			 */
+			jugadorEnJuego[i] = contarFichasTablero(tablero, pieces.get(i));
 			if(valorAlto == jugadorEnJuego[i]){
 				juego = State.Draw;
 			}
@@ -242,6 +281,23 @@ public class AtaxxRules implements GameRules{
 		}		
 		Pair<State, Piece> resultado = new Pair <State, Piece>(juego, jugador);
 		return resultado;
+	}
+	
+	/**
+	 * Metodo que cuenta las fichas del tablero
+	 * @param tablero con la dimension que tiene
+	 * @param turn la ficha de un jugador
+	 * @return n contador de fichas
+	 */
+	public static final int contarFichasTablero(Board tablero, Piece turn){
+		int n = 0;
+		for(int i= 0; i < tablero.getRows(); i++)
+			for(int j= 0; j < tablero.getCols(); j++){
+				if(turn.equals(tablero.getPosition(i, j))){
+					n++;
+				}
+			}
+		return n;
 	}
 
 }

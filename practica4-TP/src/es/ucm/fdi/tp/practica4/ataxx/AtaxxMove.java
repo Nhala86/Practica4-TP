@@ -69,19 +69,31 @@ public class AtaxxMove extends GameMove{
 		else if (board.getPosition(this.filaDestino, this.columnaDestino ) != null) {
 			throw new GameError("position (" + this.filaDestino + "," + this.columnaDestino + ") is already occupied!");
 		}
-		else if(board.getPosition(this.row, this.col) != piece){
+		else if(!board.getPosition(this.row, this.col).equals(piece)){
 			throw new GameError("La pieza en (" + this.row + "," + this.col + ") es de otro jugador");
 		}
 		else if(distancia > 2){
 			throw new GameError("La posicion (" + this.filaDestino + "," + this.columnaDestino + ")es mayor que 2");
 		}
-		else if(board.getPieceCount(piece) <= 0){
+		/*
+		 * no usar los métodos de piece-count, es para juegos que tienen limite
+		 * de fichas. Cuando necesitas el número de fichas cuéntalas.
+		 */
+		//else if(board.getPieceCount(piece) <= 0){
+		else if(AtaxxRules.contarFichasTablero(board, piece) <= 0){
 			throw new GameError("La ficha del tipo " + piece + "no es valida");
+		}
+		else if(distancia == 0){
+			throw new GameError("La ficha " + piece + "no se puede mover a su posicion de origen");
 		}
 		
 		if(distancia == 1){
 			board.setPosition(this.filaDestino, this.columnaDestino, piece);
-			board.setPieceCount(piece, board.getPieceCount(piece)+ 1);
+			/*
+			 * no usar los métodos de piece-count, es para juegos que tienen limite
+			 * de fichas. Cuando necesitas el número de fichas cuéntalas.
+			 */
+			//board.setPieceCount(piece, board.getPieceCount(piece)+ 1);
 		}
 		else if(distancia == 2){
 			board.setPosition(this.filaDestino, this.columnaDestino, piece);
@@ -97,14 +109,18 @@ public class AtaxxMove extends GameMove{
 	 * @param ficha la ficha del jugador
 	 */
 	private void convertirFichas(Board tablero, List<Piece> pieces, Piece ficha){
-		int row = tablero.getRows();
-		int col = tablero.getCols();
-		for(int f = Math.max(this.filaDestino - 1, 0); f <= Math.min(this.filaDestino + 1, row -1); f++){
-			for(int c = Math.max(this.columnaDestino - 1, 0); c <= Math.min(this.columnaDestino + 1, col -1); c++){
-				if(tablero.getPosition(f, c) != null && pieces.contains(tablero.getPosition(f, c))){
+		//row = tablero.getRows(); // int row Demasiadas variables
+		//col = tablero.getCols(); // int col Demasiadas variables
+		for(int f = Math.max(this.filaDestino - 1, 0); f <= Math.min(this.filaDestino + 1, tablero.getRows() -1); f++){
+			for(int c = Math.max(this.columnaDestino - 1, 0); c <= Math.min(this.columnaDestino + 1, tablero.getCols() -1); c++){
+				if(tablero.getPosition(f, c) != null && pieces.contains(tablero.getPosition(f, c))){ // ya recorre la lista para ver que no esta en ella el obstaculo
 					if(ficha.getId() != tablero.getPosition(f, c).getId()){
-						tablero.setPieceCount(tablero.getPosition(f, c), tablero.getPieceCount(tablero.getPosition(f, c))- 1);
-						tablero.setPieceCount(ficha, tablero.getPieceCount(ficha) + 1);
+						/*
+						 * no usar los métodos de piece-count, es para juegos que tienen limite
+						 * de fichas. Cuando necesitas el número de fichas cuéntalas.
+						 */
+						///tablero.setPieceCount(tablero.getPosition(f, c), tablero.getPieceCount(tablero.getPosition(f, c))- 1);
+						//tablero.setPieceCount(ficha, tablero.getPieceCount(ficha) + 1);
 						tablero.setPosition(f, c, ficha);
 					}
 				}
@@ -119,12 +135,12 @@ public class AtaxxMove extends GameMove{
 			return null;
 		}
 		try {
-			int row, col, filaDestino, columnaDestino;
-			row = Integer.parseInt(words[0]);
-			col = Integer.parseInt(words[1]);
-			filaDestino = Integer.parseInt(words[2]);
-			columnaDestino = Integer.parseInt(words[3]);
-			return createMove(row, col, filaDestino, columnaDestino, p);
+			//int row, col, filaDestino, columnaDestino; // Demasiadas variables
+			//row = Integer.parseInt(words[0]);
+			//col = Integer.parseInt(words[1]);
+			//filaDestino = Integer.parseInt(words[2]);
+			//columnaDestino = Integer.parseInt(words[3]);
+			return createMove(Integer.parseInt(words[0]), Integer.parseInt(words[1]), Integer.parseInt(words[2]), Integer.parseInt(words[3]), p);
 		} catch (NumberFormatException e) {
 			return null;
 		}

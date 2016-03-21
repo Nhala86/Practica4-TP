@@ -316,11 +316,11 @@ public class Main {
 	 */
 	private static void parseObstaculoOption(CommandLine line) throws ParseException {
 		String ValorObstaculos = line.getOptionValue("o");
-		if(ValorObstaculos != null){
+		if(ValorObstaculos != null){ 
 			try{
-				obstaculo = Integer.parseInt(ValorObstaculos);
+				obstaculo = Integer.parseInt(ValorObstaculos); 
 			}catch(NumberFormatException e){
-				throw new ParseException("El numero de obstaculos es incorrecto" + ValorObstaculos);
+				throw new ParseException("El numero de obstaculos es incorrecto" + ValorObstaculos);  
 			}
 		}		
 	}
@@ -576,7 +576,11 @@ public class Main {
 				}				
 			} 
 			else {
-				gameFactory = new AtaxxFactory();
+				if(obstaculo != null){
+					gameFactory = new AtaxxFactory(5 ,obstaculo);
+				}
+				else
+					gameFactory = new AtaxxFactory();
 			}
 			break;
 		default:

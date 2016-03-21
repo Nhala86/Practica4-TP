@@ -1,6 +1,5 @@
 package es.ucm.fdi.tp.practica4.ataxx;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import es.ucm.fdi.tp.basecode.bgame.Utils;
@@ -19,8 +18,8 @@ public class AtaxxRandomPlayer extends Player {
 
 	@Override
 	public GameMove requestMove(Piece p, Board board, List<Piece> pieces, GameRules rules) {
-		int opciones, opcion;
-		List<GameMove> movimientoValido = new ArrayList<GameMove>();		
+		int opciones;
+		List<GameMove> movimientoValido; //= new ArrayList<GameMove>();	// no hace falta cear el array list, validMoves devuelve uno List<GameMove> movimientoValido = new ArrayList<GameMove>();	
 		if(board.isFull()){
 			throw new GameError("El tablero esta lleno, no se puede mover mas fichas");
 		}
@@ -31,7 +30,7 @@ public class AtaxxRandomPlayer extends Player {
 				throw new GameError("Jugador " + p.getId() + " no tiene más fichas para mover");				
 			}			
 		}
-		opcion = Utils.randomInt(opciones);
-		return movimientoValido.get(opcion);
+		opciones = Utils.randomInt(opciones);
+		return movimientoValido.get(opciones);
 	}
 }
